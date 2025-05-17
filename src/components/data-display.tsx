@@ -9,20 +9,11 @@ interface EmotionDataItem {
   emotions: Record<string, number>
 }
 
-interface DialogueDataItem {
-  time: number
-  timeFormatted: string
-  character: string
-  text: string
-  type: "dialogue" | "action"
-}
-
 interface DataDisplayProps {
   emotionData: EmotionDataItem[]
-  dialogueData: DialogueDataItem[]
 }
 
-export default function DataDisplay({ emotionData, dialogueData }: DataDisplayProps) {
+export default function DataDisplay({ emotionData }: DataDisplayProps) {
   const [activeTab, setActiveTab] = useState<"emotions" | "dialogue">("emotions")
 
   const getEmotionNames = (emotions: Record<string, number>): string => {
@@ -40,12 +31,6 @@ export default function DataDisplay({ emotionData, dialogueData }: DataDisplayPr
           onClick={() => setActiveTab("emotions")}
         >
           感情データ ({emotionData.length})
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === "dialogue" ? styles.active : ""}`}
-          onClick={() => setActiveTab("dialogue")}
-        >
-          セリフ／ト書きデータ ({dialogueData.length})
         </button>
       </div>
 
@@ -71,27 +56,6 @@ export default function DataDisplay({ emotionData, dialogueData }: DataDisplayPr
           ) : (
             <p className={styles.emptyMessage}>記録された感情データはありません</p>
           )
-        ) : dialogueData.length > 0 ? (
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th>時間</th>
-                <th>キャラクター</th>
-                <th>テキスト</th>
-                <th>タイプ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dialogueData.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.timeFormatted}</td>
-                  <td>{item.character}</td>
-                  <td>{item.text}</td>
-                  <td>{item.type === "dialogue" ? "セリフ" : "ト書き"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         ) : (
           <p className={styles.emptyMessage}>記録されたセリフ／ト書きデータはありません</p>
         )}

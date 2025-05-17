@@ -24,6 +24,7 @@ $ npm run dev
 package.json
 ```
 "dependencies": {
+  "gh-pages": "^6.3.0",
   "react": "^19.1.0",
   "react-dom": "^19.1.0"
 },

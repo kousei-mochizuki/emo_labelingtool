@@ -1,7 +1,6 @@
 import { useState } from "react"
 import VideoPlayer from "../components/video-player"
 import EmotionLabels from "../components/emotion-labels"
-import DialogueInput from "../components/dialogue-input"
 import DataDisplay from "../components/data-display"
 import styles from "./page.module.css"
 
@@ -16,15 +15,6 @@ export default function EmotionLabelingTool() {
       time: number
       timeFormatted: string
       emotions: Record<string, number>
-    }>
-  >([])
-  const [dialogueData, setDialogueData] = useState<
-    Array<{
-      time: number
-      timeFormatted: string
-      character: string
-      text: string
-      type: "dialogue" | "action"
     }>
   >([])
 
@@ -49,13 +39,6 @@ export default function EmotionLabelingTool() {
     }
   }
 
-  const handleDialogueRecord = (character: string, text: string, type: "dialogue" | "action") => {
-    if (isPlaying) {
-      const timeFormatted = formatTime(currentTime)
-      setDialogueData((prev) => [...prev, { time: currentTime, timeFormatted, character, text, type }])
-    }
-  }
-
   const formatTime = (seconds: number): string => {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
@@ -66,7 +49,6 @@ export default function EmotionLabelingTool() {
   const exportData = () => {
     const data = {
       emotionData,
-      dialogueData,
       duration,
       duration_format6: formatTime(duration),
     }
@@ -131,11 +113,10 @@ export default function EmotionLabelingTool() {
 
         <div className={styles.controlsSection}>
           <EmotionLabels onEmotionRecord={handleEmotionRecord} isPlaying={isPlaying} />
-          <DialogueInput onDialogueRecord={handleDialogueRecord} isPlaying={isPlaying} />
         </div>
       </div>
 
-      <DataDisplay emotionData={emotionData} dialogueData={dialogueData} />
+      <DataDisplay emotionData={emotionData} />
 
       <button onClick={exportData} className={styles.exportButton}>
         データをエクスポート
