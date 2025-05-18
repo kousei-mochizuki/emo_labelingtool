@@ -1,0 +1,113 @@
+.timelineContainer {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  color: white;
+  position: relative;
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.timelineTitle {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.currentEmotions {
+  font-size: 14px;
+  color: #cccccc;
+}
+
+.timeline {
+  position: relative;
+  height: 40px;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.timelineBg {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background-color: #444;
+  border-radius: 5px;
+}
+
+.emotionMarker {
+  position: absolute;
+  width: 24px;
+  height: 40px;
+  top: 0;
+  transform: translateX(-12px);
+  border-radius: 4px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.emotionMarker:hover {
+  transform: translateX(-12px) scale(1.2);
+  z-index: 10;
+}
+
+.markerLabel {
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+.currentTimeIndicator {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 40px;
+  background-color: #fff;
+  transform: translateX(-1px);
+  z-index: 3;
+}
+
+.timelineTimes {
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.startTime,
+.endTime {
+  padding: 0 5px;
+}
+
+.emotionTooltip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.tooltipContent {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.tooltipTime {
+  font-size: 12px;
+  color: #ccc;
+  margin-top: 2px;
+}

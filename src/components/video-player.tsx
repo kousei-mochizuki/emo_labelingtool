@@ -1,6 +1,4 @@
-"use client"
-
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import styles from "./video-player.module.css"
 
 interface VideoPlayerProps {
@@ -22,6 +20,16 @@ export default function VideoPlayer({
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [isPipSupported, setIsPipSupported] = useState(false)
+  const [isPipActive, setIsPipActive] = useState(false)
+
+  // Check if PiP is supported
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      // @ts-ignore - TypeScript doesn't know about this API yet
+      setIsPipSupported(document.pictureInPictureEnabled && !!HTMLVideoElement.prototype.requestPictureInPicture)
+    }
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -71,6 +79,62 @@ export default function VideoPlayer({
     togglePlayPause()
   }
 
+  const setVideoTime = (time: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time
+    }
+  }
+
+  // Expose the setVideoTime method to the window object so we can call it from outside
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      ;(window as any).setVideoTime = setVideoTime
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        delete (window as any).setVideoTime
+      }
+    }
+  }, [])
+
+  // Handle Picture-in-Picture
+  const togglePictureInPicture = async () => {
+    if (!videoRef.current) return
+
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture()
+      } else {
+        await videoRef.current.requestPictureInPicture()
+      }
+    } catch (error) {
+      console.error("Picture-in-Picture failed:", error)
+    }
+  }
+
+  // Set up PiP event listeners
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const handleEnterPiP = () => {
+      setIsPipActive(true)
+    }
+
+    const handleExitPiP = () => {
+      setIsPipActive(false)
+    }
+
+    video.addEventListener("enterpictureinpicture", handleEnterPiP)
+    video.addEventListener("leavepictureinpicture", handleExitPiP)
+
+    return () => {
+      video.removeEventListener("enterpictureinpicture", handleEnterPiP)
+      video.removeEventListener("leavepictureinpicture", handleExitPiP)
+    }
+  }, [videoRef.current])
+
   if (!source) {
     return (
       <div className={styles.placeholder}>
@@ -118,6 +182,23 @@ export default function VideoPlayer({
               }}
             />
           )}
+
+          {isPipSupported && (
+            <button
+              className={`${styles.pipButton} ${isPipActive ? styles.active : ""}`}
+              onClick={togglePictureInPicture}
+              title="ピクチャインピクチャモード"
+            >
+              PiP
+            </button>
+          )}
+        </div>
+      )}
+
+      {isPipActive && (
+        <div className={styles.pipNotice}>
+          <p>ピクチャインピクチャモード中</p>
+          <p>キーボードの1-8で感情を記録できます</p>
         </div>
       )}
     </div>

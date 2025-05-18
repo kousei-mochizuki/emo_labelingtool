@@ -1,0 +1,95 @@
+.container {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.title {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.description {
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.error {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #ffebee;
+  color: #d32f2f;
+  border-radius: 4px;
+  border-left: 4px solid #d32f2f;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.captureButton,
+.stopButton,
+.useButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.captureButton {
+  background-color: #1890ff;
+  color: white;
+}
+
+.captureButton:hover {
+  background-color: #40a9ff;
+}
+
+.stopButton {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.stopButton:hover {
+  background-color: #ff7875;
+}
+
+.useButton {
+  background-color: #52c41a;
+  color: white;
+}
+
+.useButton:hover {
+  background-color: #73d13d;
+}
+
+.previewContainer {
+  margin-top: 15px;
+}
+
+.previewLabel {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.preview {
+  width: 100%;
+  max-height: 300px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #000;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+}

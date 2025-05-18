@@ -1,28 +1,19 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import styles from "./emotion-labels.module.css"
 
 interface EmotionLabelsProps {
-  onEmotionRecord: (emotions: Record<string, number>) => void
+  emotions: Array<{
+    id: string
+    label: string
+    key: string
+    color: string
+  }>
+  onEmotionRecord: (emotionId: string) => void
   isPlaying: boolean
 }
 
-export default function EmotionLabels({ onEmotionRecord, isPlaying }: EmotionLabelsProps) {
-  const emotions = [
-    { id: "joy", label: "Joy（喜び）", key: "1" },
-    { id: "trust", label: "Trust（信頼）", key: "2" },
-    { id: "fear", label: "Fear（恐れ）", key: "3" },
-    { id: "surprise", label: "Surprise（驚き）", key: "4" },
-    { id: "sadness", label: "Sadness（悲しみ）", key: "5" },
-    { id: "disgust", label: "Disgust（嫌悪）", key: "6" },
-    { id: "anger", label: "Anger（怒り）", key: "7" },
-    { id: "anticipation", label: "Anticipation（期待）", key: "8" },
-  ]
-
-  const [activeEmotions, setActiveEmotions] = useState<Record<string, number>>(
-    emotions.reduce((acc, emotion) => ({ ...acc, [emotion.id]: 0 }), {}),
-  )
+export default function EmotionLabels({ emotions, onEmotionRecord, isPlaying }: EmotionLabelsProps) {
+  const [activeEmotionId, setActiveEmotionId] = useState<string | null>(null)
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -30,7 +21,7 @@ export default function EmotionLabels({ onEmotionRecord, isPlaying }: EmotionLab
       const emotion = emotions.find((e) => e.key === key)
 
       if (emotion && isPlaying) {
-        toggleEmotion(emotion.id)
+        recordEmotion(emotion.id)
       }
     }
 
@@ -38,20 +29,17 @@ export default function EmotionLabels({ onEmotionRecord, isPlaying }: EmotionLab
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [activeEmotions, isPlaying])
+  }, [isPlaying, emotions, onEmotionRecord])
 
-  const toggleEmotion = (emotionId: string) => {
-    setActiveEmotions((prev) => {
-      const newState = {
-        ...prev,
-        [emotionId]: prev[emotionId] === 1 ? 0 : 1,
-      }
+  const recordEmotion = (emotionId: string) => {
+    // Record the emotion immediately
+    onEmotionRecord(emotionId)
 
-      // Record the emotion state
-      onEmotionRecord(newState)
-
-      return newState
-    })
+    // Visual feedback
+    setActiveEmotionId(emotionId)
+    setTimeout(() => {
+      setActiveEmotionId(null)
+    }, 300)
   }
 
   return (
@@ -65,9 +53,12 @@ export default function EmotionLabels({ onEmotionRecord, isPlaying }: EmotionLab
         {emotions.map((emotion) => (
           <button
             key={emotion.id}
-            className={`${styles.emotionButton} ${activeEmotions[emotion.id] === 1 ? styles.active : ""}`}
-            onClick={() => toggleEmotion(emotion.id)}
+            className={`${styles.emotionButton} ${activeEmotionId === emotion.id ? styles.active : ""}`}
+            onClick={() => recordEmotion(emotion.id)}
             disabled={!isPlaying}
+            style={{
+              borderLeft: `5px solid ${emotion.color}`,
+            }}
           >
             <span className={styles.keyHint}>{emotion.key}</span>
             {emotion.label}
