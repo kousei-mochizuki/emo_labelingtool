@@ -1,65 +1,113 @@
-.container {
-  background-color: #f5f5f5;
+.timelineContainer {
+  margin: 0;
+  padding: 10px;
+  background-color: #2a2a2a;
   border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-
-.title {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 18px;
-  color: #333;
-}
-
-.instruction {
-  margin-bottom: 15px;
-  font-size: 14px;
-  color: #666;
-}
-
-.emotionGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-.emotionButton {
+  color: white;
   position: relative;
-  padding: 10px 15px 10px 30px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.3s;
 }
 
-.emotionButton:hover:not(:disabled) {
-  background-color: #f0f0f0;
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
-.emotionButton.active {
-  background-color: #e6f7ff;
-  border-color: #1890ff;
-  color: #1890ff;
-}
-
-.emotionButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.keyHint {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  color: #999;
+.timelineTitle {
   font-weight: bold;
+  font-size: 14px;
 }
 
-.emotionButton.active .keyHint {
-  color: #1890ff;
+.currentEmotions {
+  font-size: 12px;
+  color: #cccccc;
+}
+
+.timeline {
+  position: relative;
+  height: 40px;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.timelineBg {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background-color: #444;
+  border-radius: 5px;
+}
+
+.emotionMarker {
+  position: absolute;
+  width: 24px;
+  height: 40px;
+  top: 0;
+  transform: translateX(-12px);
+  border-radius: 4px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.emotionMarker:hover {
+  transform: translateX(-12px) scale(1.2);
+  z-index: 10;
+}
+
+.markerLabel {
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+.currentTimeIndicator {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 40px;
+  background-color: #fff;
+  transform: translateX(-1px);
+  z-index: 3;
+}
+
+.timelineTimes {
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.startTime,
+.endTime {
+  padding: 0 5px;
+}
+
+.emotionTooltip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.tooltipContent {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.tooltipTime {
+  font-size: 12px;
+  color: #ccc;
+  margin-top: 2px;
 }

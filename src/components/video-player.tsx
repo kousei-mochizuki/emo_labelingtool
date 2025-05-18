@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useRef, useState } from "react"
 import styles from "./video-player.module.css"
 
@@ -192,13 +194,6 @@ export default function VideoPlayer({
               PiP
             </button>
           )}
-        </div>
-      )}
-
-      {isPipActive && (
-        <div className={styles.pipNotice}>
-          <p>ピクチャインピクチャモード中</p>
-          <p>キーボードの1-8で感情を記録できます</p>
         </div>
       )}
     </div>

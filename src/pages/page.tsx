@@ -4,14 +4,16 @@ import EmotionLabels from "../components/emotion-labels"
 import EmotionTimeline from "../components/emotion-timeline"
 import EmotionDataEditor from "../components/emotion-data-editor"
 import ScreenCapture from "../components/screen-capture"
+import TimerMode from "../components/timer-mode"
+import MiniTimer from "../components/mini-timer"
 import styles from "./page.module.css"
 
 export default function EmotionLabelingTool() {
   const [videoSource, setVideoSource] = useState<string>("")
-  const [videoType, setVideoType] = useState<"local" | "embed" | "capture">("local")
+  const [videoType, setVideoType] = useState<"local" | "embed" | "capture" | "timer">("timer") // Default to timer mode
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [currentTime, setCurrentTime] = useState<number>(0)
-  const [duration, setDuration] = useState<number>(0)
+  const [duration, setDuration] = useState<number>(3600) // Default 1 hour for timer mode
   const [emotionData, setEmotionData] = useState<
     Array<{
       id: string
@@ -22,6 +24,9 @@ export default function EmotionLabelingTool() {
   >([])
   const [capturedStream, setCapturedStream] = useState<MediaStream | null>(null)
   const capturedVideoRef = useRef<HTMLVideoElement | null>(null)
+  const [showScreenCapture, setShowScreenCapture] = useState(false)
+  const [showEditor, setShowEditor] = useState(false)
+  const [showMiniTimer, setShowMiniTimer] = useState(false)
 
   // Define emotions with their colors
   const emotions = [
@@ -42,8 +47,8 @@ export default function EmotionLabelingTool() {
       const key = event.key
       const emotion = emotions.find((e) => e.key === key)
 
-      if (emotion && isPlaying) {
-        // Record emotion even in PiP mode
+      if (emotion && isPlaying && !showMiniTimer) {
+        // Record emotion even in PiP mode (but not when mini timer is active)
         handleEmotionRecord(emotion.id)
       }
     }
@@ -52,7 +57,7 @@ export default function EmotionLabelingTool() {
     return () => {
       window.removeEventListener("keydown", handleGlobalKeyDown)
     }
-  }, [isPlaying, emotions])
+  }, [isPlaying, emotions, showMiniTimer])
 
   // Handle captured video stream
   useEffect(() => {
@@ -113,6 +118,7 @@ export default function EmotionLabelingTool() {
     setCapturedStream(stream)
     setVideoType("capture")
     setVideoSource("")
+    setShowScreenCapture(false) // Hide screen capture UI after successful capture
   }
 
   const handleEmotionRecord = (emotionId: string) => {
@@ -144,6 +150,8 @@ export default function EmotionLabelingTool() {
       ;(window as any).setVideoTime(time)
     } else if (videoType === "capture" && capturedVideoRef.current) {
       capturedVideoRef.current.currentTime = time
+    } else if (videoType === "timer") {
+      setCurrentTime(time)
     }
   }
 
@@ -198,37 +206,83 @@ export default function EmotionLabelingTool() {
     URL.revokeObjectURL(url)
   }
 
+  const handleOpenMiniTimer = () => {
+    setShowMiniTimer(true)
+  }
+
+  const handleCloseMiniTimer = () => {
+    setShowMiniTimer(false)
+  }
+
   return (
     <div className={styles.container}>
+      <h1 className={styles.title}>感情ラベリングツール</h1>
 
-      <div className={styles.inputSection}>
-        <div className={styles.inputGroup}>
-          <label htmlFor="videoFile" className={styles.label}>
-            ローカル動画ファイル:
-          </label>
-          <input type="file" id="videoFile" accept="video/*" onChange={handleFileChange} className={styles.fileInput} />
+      <div className={styles.compactControls}>
+        <div className={styles.fileInputs}>
+          <div className={styles.inputGroup}>
+            <input
+              type="file"
+              id="videoFile"
+              accept="video/*"
+              onChange={handleFileChange}
+              className={styles.fileInput}
+            />
+            <label htmlFor="videoFile" className={styles.fileLabel}>
+              動画ファイルを選択
+            </label>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <input
+              type="text"
+              id="embedUrl"
+              placeholder="YouTube埋め込みURLを入力"
+              onChange={handleEmbedChange}
+              className={styles.textInput}
+            />
+          </div>
+
+          <button className={styles.captureButton} onClick={() => setShowScreenCapture(!showScreenCapture)}>
+            {showScreenCapture ? "画面キャプチャを隠す" : "画面キャプチャを表示"}
+          </button>
+
+          <button
+            className={`${styles.modeButton} ${videoType === "timer" ? styles.active : ""}`}
+            onClick={() => setVideoType("timer")}
+          >
+            タイマーモード
+          </button>
         </div>
 
-        <div className={styles.inputGroup}>
-          <label htmlFor="embedUrl" className={styles.label}>
-            埋め込み動画URL:
-          </label>
-          <input
-            type="text"
-            id="embedUrl"
-            placeholder="YouTube埋め込みURLを入力"
-            onChange={handleEmbedChange}
-            className={styles.textInput}
-          />
+        <div className={styles.actionButtons}>
+          <button onClick={exportData} className={styles.exportButton}>
+            CSVエクスポート
+          </button>
+          <button
+            onClick={() => setShowEditor(!showEditor)}
+            className={`${styles.editorToggle} ${showEditor ? styles.active : ""}`}
+          >
+            {showEditor ? "編集パネルを閉じる" : "編集パネルを開く"}
+          </button>
         </div>
       </div>
 
-      {/* Screen Capture Component */}
-      <ScreenCapture onVideoSelected={handleScreenCaptured} />
+      {/* Screen Capture Component (Collapsible) */}
+      {showScreenCapture && <ScreenCapture onVideoSelected={handleScreenCaptured} />}
 
       <div className={styles.mainContent}>
         <div className={styles.videoSection}>
-          {videoType === "capture" ? (
+          {videoType === "timer" ? (
+            <TimerMode
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+              currentTime={currentTime}
+              setCurrentTime={setCurrentTime}
+              setDuration={setDuration}
+              onOpenMiniTimer={handleOpenMiniTimer}
+            />
+          ) : videoType === "capture" ? (
             <div className={styles.capturedVideoContainer}>
               <video
                 ref={capturedVideoRef}
@@ -255,14 +309,12 @@ export default function EmotionLabelingTool() {
             />
           )}
 
-          <div className={styles.timeInfo}>
-            <p>
-              現在時間: {formatTime(currentTime)} ({currentTime.toFixed(6)})
-            </p>
-            <p>
-              動画長: {formatTime(duration)} ({duration.toFixed(6)})
-            </p>
-          </div>
+          {videoType !== "timer" && (
+            <div className={styles.timeInfo}>
+              <span>現在: {formatTime(currentTime)}</span>
+              <span>長さ: {formatTime(duration)}</span>
+            </div>
+          )}
 
           <EmotionTimeline
             emotionData={emotionData}
@@ -278,18 +330,33 @@ export default function EmotionLabelingTool() {
         </div>
       </div>
 
-      <EmotionDataEditor
-        emotionData={emotionData}
-        emotions={emotions}
-        onDelete={handleDeleteEmotion}
-        onUpdateTime={handleUpdateEmotionTime}
-        onUpdateType={handleUpdateEmotionType}
-        duration={duration}
-      />
+      {/* Collapsible Editor Section */}
+      {showEditor && (
+        <div className={styles.editorSection}>
+          <EmotionDataEditor
+            emotionData={emotionData}
+            emotions={emotions}
+            onDelete={handleDeleteEmotion}
+            onUpdateTime={handleUpdateEmotionTime}
+            onUpdateType={handleUpdateEmotionType}
+            duration={duration}
+          />
+        </div>
+      )}
 
-      <button onClick={exportData} className={styles.exportButton}>
-        データをCSVでエクスポート
-      </button>
+      {/* Mini Timer (Floating) */}
+      {showMiniTimer && (
+        <MiniTimer
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+          currentTime={currentTime}
+          setCurrentTime={setCurrentTime}
+          duration={duration}
+          emotions={emotions}
+          onEmotionRecord={handleEmotionRecord}
+          onClose={handleCloseMiniTimer}
+        />
+      )}
     </div>
   )
 }

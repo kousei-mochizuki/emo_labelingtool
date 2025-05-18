@@ -102,29 +102,29 @@ export default function EmotionDataEditor({
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>感情データ編集</h2>
+      <div className={styles.header}>
+        <h2 className={styles.title}>感情データ編集</h2>
+        <div className={styles.controls}>
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              placeholder="検索..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
 
-      <div className={styles.controls}>
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            placeholder="検索..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-          />
-        </div>
-
-        <div className={styles.sortContainer}>
-          <label className={styles.sortLabel}>並び替え:</label>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as "time" | "emotion")}
-            className={styles.sortSelect}
-          >
-            <option value="time">時間順</option>
-            <option value="emotion">感情順</option>
-          </select>
+          <div className={styles.sortContainer}>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as "time" | "emotion")}
+              className={styles.sortSelect}
+            >
+              <option value="time">時間順</option>
+              <option value="emotion">感情順</option>
+            </select>
+          </div>
         </div>
       </div>
 

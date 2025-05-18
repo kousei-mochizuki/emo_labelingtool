@@ -4,23 +4,27 @@
   background-color: #000;
   border-radius: 8px;
   overflow: hidden;
+  flex: 1;
+  display: flex;
 }
 
 .video {
   width: 100%;
-  display: block;
+  height: 100%;
+  object-fit: contain;
   cursor: pointer;
 }
 
 .iframe {
   width: 100%;
-  height: 400px;
+  height: 100%;
   border: none;
+  min-height: 300px;
 }
 
 .placeholder {
   width: 100%;
-  height: 400px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,6 +33,7 @@
   color: #666;
   text-align: center;
   padding: 20px;
+  flex: 1;
 }
 
 .controls {
@@ -37,19 +42,19 @@
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 10px;
+  padding: 8px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .playPauseButton {
   background-color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 5px 10px;
+  padding: 4px 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .seekBar {
@@ -65,16 +70,16 @@
 .seekBar::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #fff;
   cursor: pointer;
 }
 
 .seekBar::-moz-range-thumb {
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #fff;
   cursor: pointer;
@@ -85,9 +90,9 @@
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 5px 10px;
+  padding: 4px 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   transition: background-color 0.3s;
 }
 
@@ -97,18 +102,4 @@
 
 .pipButton.active {
   background-color: #1890ff;
-}
-
-.pipNotice {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #f0f8ff;
-  border-radius: 4px;
-  text-align: center;
-  border-left: 4px solid #1890ff;
-}
-
-.pipNotice p {
-  margin: 5px 0;
-  font-size: 14px;
 }

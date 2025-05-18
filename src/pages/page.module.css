@@ -1,81 +1,155 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
     "Helvetica Neue", sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 20px;
+  margin: 0 0 10px 0;
   color: #333;
+  font-size: 1.5rem;
 }
 
-.inputSection {
+.compactControls {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.fileInputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 20px;
 }
 
 .inputGroup {
-  flex: 1;
-  min-width: 300px;
+  position: relative;
 }
 
-.label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+.fileInput {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
 }
 
-.fileInput,
+.fileLabel {
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.fileLabel:hover {
+  background-color: #d0d0d0;
+}
+
 .textInput {
-  width: 100%;
-  padding: 8px;
+  padding: 6px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-.mainContent {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.videoSection {
-  flex: 2;
-  min-width: 400px;
-}
-
-.timeInfo {
-  margin-top: 10px;
-  font-family: monospace;
   font-size: 14px;
+  width: 200px;
 }
 
-.controlsSection {
-  flex: 1;
-  min-width: 300px;
+.captureButton {
+  padding: 6px 12px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.captureButton:hover {
+  background-color: #d0d0d0;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
 }
 
 .exportButton {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
+  padding: 6px 12px;
   background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   transition: background-color 0.3s;
 }
 
 .exportButton:hover {
   background-color: #45a049;
+}
+
+.editorToggle {
+  padding: 6px 12px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.editorToggle:hover {
+  background-color: #e0e0e0;
+}
+
+.editorToggle.active {
+  background-color: #1890ff;
+  color: white;
+}
+
+.mainContent {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.videoSection {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.timeInfo {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  font-family: monospace;
+  font-size: 12px;
+  color: #666;
+}
+
+.controlsSection {
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  overflow-y: auto;
 }
 
 .capturedVideoContainer {
@@ -84,11 +158,13 @@
   background-color: #000;
   border-radius: 8px;
   overflow: hidden;
+  flex: 1;
 }
 
 .capturedVideo {
   width: 100%;
-  display: block;
+  height: 100%;
+  object-fit: contain;
 }
 
 .captureOverlay {
@@ -116,6 +192,10 @@
   font-size: 12px;
 }
 
+.editorSection {
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
   .mainContent {
     flex-direction: column;
@@ -124,5 +204,21 @@
   .videoSection,
   .controlsSection {
     width: 100%;
+    max-width: none;
+  }
+
+  .compactControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fileInputs,
+  .actionButtons {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .actionButtons {
+    margin-top: 10px;
   }
 }
